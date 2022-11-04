@@ -10,7 +10,7 @@ CXX_PROGRAMS += armips
 endif
 
 ifeq ($(OS),Windows_NT)
-ARMIPS_FLAGS := -municode
+#ARMIPS_FLAGS := -municode
 endif
 
 default: all

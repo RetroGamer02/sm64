@@ -495,10 +495,11 @@ ifeq ($(TARGET_WEB),1)
   PLATFORM_LDFLAGS := -lm -no-pie -s TOTAL_MEMORY=20MB -g4 --source-map-base http://localhost:8080/ -s "EXTRA_EXPORTED_RUNTIME_METHODS=['callMain']"
 endif
 ifeq ($(TARGET_N3DS),1)
-  CTRULIB  :=  $(DEVKITPRO)/libctru
+  #CTRULIB  :=  $(DEVKITPRO)/libctru
+  CTRULIB		:=	$(CURDIR)/libctru
   LIBDIRS  := $(CTRULIB)
   export LIBPATHS  :=  $(foreach dir,$(LIBDIRS),-L$(dir)/lib)
-  PLATFORM_CFLAGS  := -mtp=soft -DTARGET_N3DS -DARM11 -DosGetTime=n64_osGetTime -D_3DS -march=armv6k -mtune=mpcore -mfloat-abi=hard -mword-relocations -fomit-frame-pointer -ffast-math $(foreach dir,$(LIBDIRS),-I$(dir)/include)
+  PLATFORM_CFLAGS  := -mtp=soft -DTARGET_N3DS -DARM11 -DosGetTime=n64_osGetTime -D_3DS -D__3DS__ -march=armv6k -mtune=mpcore -mfloat-abi=hard -mword-relocations -fomit-frame-pointer -ffast-math $(foreach dir,$(LIBDIRS),-I$(dir)/include)
   PLATFORM_LDFLAGS := $(LIBPATHS) -lcitro3d -lctru -lm -specs=3dsx.specs -g -marm -mthumb-interwork -march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
   ifeq ($(DISABLE_AUDIO),1)
     PLATFORM_CFLAGS += -DDISABLE_AUDIO
@@ -545,8 +546,8 @@ else
 endif
 
 CC_CHECK := $(CC) -fsyntax-only -fsigned-char $(INCLUDE_CFLAGS) -Wall -Wextra -Wno-format-security -D_LANGUAGE_C $(VERSION_CFLAGS) $(MATCH_CFLAGS) $(PLATFORM_CFLAGS) $(GFX_CFLAGS) $(GRUCODE_CFLAGS)
-CFLAGS := $(OPT_FLAGS) $(INCLUDE_CFLAGS) -D_LANGUAGE_C $(VERSION_CFLAGS) $(MATCH_CFLAGS) $(PLATFORM_CFLAGS) $(GFX_CFLAGS) $(GRUCODE_CFLAGS) $(MARCH_FLAGS) -fno-strict-aliasing -fwrapv
-
+CFLAGS := -O3 $(INCLUDE_CFLAGS) -D_LANGUAGE_C $(VERSION_CFLAGS) $(MATCH_CFLAGS) $(PLATFORM_CFLAGS) $(GFX_CFLAGS) $(GRUCODE_CFLAGS) $(MARCH_FLAGS) -fno-strict-aliasing -fwrapv
+#$(OPT_FLAGS)
 ASFLAGS := -I include -I $(BUILD_DIR) $(VERSION_ASFLAGS)
 
 LDFLAGS := $(PLATFORM_LDFLAGS) $(GFX_LDFLAGS)
@@ -901,15 +902,15 @@ $(ELF): $(O_FILES) $(MIO0_FILES:.mio0=.o) $(SOUND_OBJ_FILES) $(ULTRA_O_FILES) $(
 	$(LD) -L $(BUILD_DIR) -o $@ $(O_FILES) $(BUILD_DIR)/src/pc/gfx/shader.shbin.o $(MINIMAP_T3X_O) $(SOUND_OBJ_FILES) $(ULTRA_O_FILES) $(GODDARD_O_FILES) $(LDFLAGS)
 
 $(EXE): $(ELF)
-	3dsxtool $< $@ --smdh=$(BUILD_DIR)/$(SMDH_ICON)
+	C:\\devkitPro\\tools\\bin\\3dsxtool $< $@ --smdh=$(BUILD_DIR)/$(SMDH_ICON)
 
 $(CIA): $(ELF)
 	@echo "Generating $@, please wait..."
-	makerom -f cia -o "$@" -rsf 3ds/template.rsf -target t -elf "$<" -icon 3ds/icon.icn -banner 3ds/banner.bnr
+	C:\\devkitPro\\tools\\bin\\makerom -f cia -o "$@" -rsf 3ds/template.rsf -target t -elf "$<" -icon 3ds/icon.icn -banner 3ds/banner.bnr
 
 # stolen from /opt/devkitpro/devkitARM/base_tools
 define bin2o
-  bin2s -a 4 -H $(BUILD_DIR)/$(MINIMAP_TEXTURES)/`(echo $(<F) | tr . _)`.h $(BUILD_DIR)/$< | $(AS) -o $(BUILD_DIR)/$(MINIMAP_TEXTURES)/$(<F).o
+  C:\\devkitPro\\tools\\bin\\bin2s -a 4 -H $(BUILD_DIR)/$(MINIMAP_TEXTURES)/`(echo $(<F) | tr . _)`.h $(BUILD_DIR)/$< | $(AS) -o $(BUILD_DIR)/$(MINIMAP_TEXTURES)/$(<F).o
 endef
 
 # TODO: simplify dependency chain
@@ -921,13 +922,13 @@ $(BUILD_DIR)/src/pc/gfx/gfx_3ds_menu.o: $(MINIMAP_T3X_HEADERS)
 	$(bin2o)
 
 %.t3x: %.t3s
-	tex3ds -i $(BUILD_DIR)/$< -o $(BUILD_DIR)/$@
+	C:\\devkitPro\\tools\\bin\\tex3ds -i $(BUILD_DIR)/$< -o $(BUILD_DIR)/$@
 
 %.t3s: %.png
 	@printf -- "-f rgba -z auto\n../../../../../$(<)\n" > $(BUILD_DIR)/$@
 
 %.smdh: %.png
-	smdhtool --create "$(SMDH_TITLE)" "$(SMDH_DESCRIPTION)" "$(SMDH_AUTHOR)" $< $(BUILD_DIR)/$@
+	C:\\devkitPro\\tools\\bin\\smdhtool --create "$(SMDH_TITLE)" "$(SMDH_DESCRIPTION)" "$(SMDH_AUTHOR)" $< $(BUILD_DIR)/$@
 
 else
 $(EXE): $(O_FILES) $(MIO0_FILES:.mio0=.o) $(SOUND_OBJ_FILES) $(ULTRA_O_FILES) $(GODDARD_O_FILES)

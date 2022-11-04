@@ -10182,9 +10182,12 @@ static const InstrumentSetup _af_default_instrumentsetup =
 
 static const TrackSetup _af_default_tracksetup =
 {
+	//The Samplerate
+	//44100.0
+	//22050.0
 	0,
 	{
-		44100.0,
+		32728.5,
 		AF_SAMPFMT_TWOSCOMP,
 		16,
 		_AF_BYTEORDER_NATIVE,
