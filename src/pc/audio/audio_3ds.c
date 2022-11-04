@@ -124,7 +124,7 @@ static bool audio_3ds_init()
         cpu = 2; // n3ds 3rd core
         prio = 0x18;
     }
-    else if (R_SUCCEEDED(APT_SetAppCpuTimeLimit(80)))
+    else if (R_SUCCEEDED(APT_SetAppCpuTimeLimit(70)))
     {
         cpu = 1; // o3ds 2nd core (system)
         prio = 0x18;
