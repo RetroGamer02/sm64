@@ -902,15 +902,15 @@ $(ELF): $(O_FILES) $(MIO0_FILES:.mio0=.o) $(SOUND_OBJ_FILES) $(ULTRA_O_FILES) $(
 	$(LD) -L $(BUILD_DIR) -o $@ $(O_FILES) $(BUILD_DIR)/src/pc/gfx/shader.shbin.o $(MINIMAP_T3X_O) $(SOUND_OBJ_FILES) $(ULTRA_O_FILES) $(GODDARD_O_FILES) $(LDFLAGS)
 
 $(EXE): $(ELF)
-	C:\\devkitPro\\tools\\bin\\3dsxtool $< $@ --smdh=$(BUILD_DIR)/$(SMDH_ICON)
+	3dsxtool $< $@ --smdh=$(BUILD_DIR)/$(SMDH_ICON)
 
 $(CIA): $(ELF)
 	@echo "Generating $@, please wait..."
-	C:\\devkitPro\\tools\\bin\\makerom -f cia -o "$@" -rsf 3ds/template.rsf -target t -elf "$<" -icon 3ds/icon.icn -banner 3ds/banner.bnr
+	makerom -f cia -o "$@" -rsf 3ds/template.rsf -target t -elf "$<" -icon 3ds/icon.icn -banner 3ds/banner.bnr
 
 # stolen from /opt/devkitpro/devkitARM/base_tools
 define bin2o
-  C:\\devkitPro\\tools\\bin\\bin2s -a 4 -H $(BUILD_DIR)/$(MINIMAP_TEXTURES)/`(echo $(<F) | tr . _)`.h $(BUILD_DIR)/$< | $(AS) -o $(BUILD_DIR)/$(MINIMAP_TEXTURES)/$(<F).o
+  bin2s -a 4 -H $(BUILD_DIR)/$(MINIMAP_TEXTURES)/`(echo $(<F) | tr . _)`.h $(BUILD_DIR)/$< | $(AS) -o $(BUILD_DIR)/$(MINIMAP_TEXTURES)/$(<F).o
 endef
 
 # TODO: simplify dependency chain
@@ -922,13 +922,13 @@ $(BUILD_DIR)/src/pc/gfx/gfx_3ds_menu.o: $(MINIMAP_T3X_HEADERS)
 	$(bin2o)
 
 %.t3x: %.t3s
-	C:\\devkitPro\\tools\\bin\\tex3ds -i $(BUILD_DIR)/$< -o $(BUILD_DIR)/$@
+	tex3ds -i $(BUILD_DIR)/$< -o $(BUILD_DIR)/$@
 
 %.t3s: %.png
 	@printf -- "-f rgba -z auto\n../../../../../$(<)\n" > $(BUILD_DIR)/$@
 
 %.smdh: %.png
-	C:\\devkitPro\\tools\\bin\\smdhtool --create "$(SMDH_TITLE)" "$(SMDH_DESCRIPTION)" "$(SMDH_AUTHOR)" $< $(BUILD_DIR)/$@
+	smdhtool --create "$(SMDH_TITLE)" "$(SMDH_DESCRIPTION)" "$(SMDH_AUTHOR)" $< $(BUILD_DIR)/$@
 
 else
 $(EXE): $(O_FILES) $(MIO0_FILES:.mio0=.o) $(SOUND_OBJ_FILES) $(ULTRA_O_FILES) $(GODDARD_O_FILES)
