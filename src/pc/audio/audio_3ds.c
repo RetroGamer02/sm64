@@ -134,7 +134,7 @@ static bool audio_3ds_init()
         prio = 0x19;
     }
 
-    threadId = threadCreate(audio_3ds_loop, 0, 64 * 1024, prio, cpu, true); //prio - 1
+    threadId = threadCreate(audio_3ds_loop, 0, 64 * 1024, prio, cpu, true);
 
     if (threadId)
         printf("Created audio thread on core %i\n", cpu);
