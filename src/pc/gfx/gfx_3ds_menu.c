@@ -74,9 +74,9 @@ static void gfx_3ds_menu_draw_button(float *vbo_buffer, int x, int y, C3D_Tex te
 static void gfx_3ds_menu_draw_buttons(float * vertex_buffer)
 {
     // aa
-    //gfx_3ds_menu_draw_button(vertex_buffer, 11, 96, gfx_config.useAA ? aa_on_tex : aa_off_tex, false);
+    gfx_3ds_menu_draw_button(vertex_buffer, 11, 96, gfx_config.useAA ? aa_on_tex : aa_off_tex, false);
     // screen mode
-    //gfx_3ds_menu_draw_button(vertex_buffer, 86, 96, gfx_config.useWide ? mode_800_tex : mode_400_tex, false);
+    gfx_3ds_menu_draw_button(vertex_buffer, 86, 96, gfx_config.useWide ? mode_800_tex : mode_400_tex, false);
     // resume
     gfx_3ds_menu_draw_button(vertex_buffer, 11, 208, resume_tex, false);
     // exit game
