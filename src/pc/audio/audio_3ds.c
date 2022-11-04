@@ -116,7 +116,6 @@ static bool audio_3ds_init()
     LightEvent_Init(&s_event_main, RESET_ONESHOT);
 
     s32 prio = 0;
-    //svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
 
     int cpu;
     if (is_new_n3ds())

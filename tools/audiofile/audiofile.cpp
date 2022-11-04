@@ -10182,9 +10182,6 @@ static const InstrumentSetup _af_default_instrumentsetup =
 
 static const TrackSetup _af_default_tracksetup =
 {
-	//The Samplerate
-	//44100.0
-	//22050.0
 	0,
 	{
 		32728.5,
