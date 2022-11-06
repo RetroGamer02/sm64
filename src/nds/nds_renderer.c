@@ -417,7 +417,7 @@ static void g_vtx(Gwords *words) {
     const Vtx *vertices = (const Vtx*)words->w1;
 
     // Store vertices in the vertex buffer
-    swiCopy(vertices, &vertex_buffer[index - count], sizeof(Vtx) * 8);
+    swiFastCopy(vertices, &vertex_buffer[index - count], sizeof(Vtx) * 4);
 
     if (geometry_mode & G_LIGHTING) {
         // Recalculate transformed light vectors if the lights or modelview matrix changed
