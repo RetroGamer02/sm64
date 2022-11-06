@@ -956,7 +956,7 @@ void UNUSED gd_rot_mat_offset(Mat4f *dst, f32 x, f32 y, f32 z, s32 copy) {
     vec.x = swiDivide(-y, opp);
     vec.y = swiDivide(-x, opp);
     vec.z = swiDivide(-z, opp);
-    else
+    #else
     c = adj / mag;
     s = opp / mag;
 
