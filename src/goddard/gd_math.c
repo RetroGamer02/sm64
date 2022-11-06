@@ -178,7 +178,7 @@ void gd_create_origin_lookat(Mat4f *mtx, struct GdVec3f *vec, f32 roll) {
 
     gd_set_identity_mat4(mtx);
     if (hMag != 0.0f) {
-        invertedHMag = 1.0f / hMag;
+        invertedHMag = swiDivide(1.0f, hMag);
         (*mtx)[0][0] = ((-unit.z * c) - (s * unit.y * unit.x)) * invertedHMag;
         (*mtx)[1][0] = ((unit.z * s) - (c * unit.y * unit.x)) * invertedHMag;
         (*mtx)[2][0] = -unit.x;
@@ -949,12 +949,12 @@ void UNUSED gd_rot_mat_offset(Mat4f *dst, f32 x, f32 y, f32 z, s32 copy) {
     }
 
     mag = gd_sqrt_f(SQ(adj) + SQ(opp));
-    c = adj / mag;
-    s = opp / mag;
+    c = swiDivide(adj, mag);
+    s = swiDivide(opp, mag);
 
-    vec.x = -y / opp;
-    vec.y = -x / opp;
-    vec.z = -z / opp;
+    vec.x = swiDivide(-y, opp);
+    vec.y = swiDivide(-x, opp);
+    vec.z = swiDivide(-z, opp);
 
     gd_create_rot_matrix(&rot, &vec, s, c);
     if (!copy) {
