@@ -6,6 +6,8 @@
 
 #include "nds_renderer.h"
 
+#include "tonccpy.h"
+
 struct Color {
     uint8_t r, g, b, a;
 };
@@ -417,7 +419,7 @@ static void g_vtx(Gwords *words) {
     const Vtx *vertices = (const Vtx*)words->w1;
 
     // Store vertices in the vertex buffer
-    swiFastCopy(vertices, &vertex_buffer[index - count], sizeof(Vtx) * 4);
+    tonccpy(&vertex_buffer[index - count], vertices, count * sizeof(Vtx));
 
     if (geometry_mode & G_LIGHTING) {
         // Recalculate transformed light vectors if the lights or modelview matrix changed
