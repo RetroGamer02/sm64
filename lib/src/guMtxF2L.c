@@ -3,10 +3,6 @@
 #include <string.h>
 #endif
 
-#ifdef TARGET_NDS
-#include "tonccpy.h"
-#endif
-
 #ifndef GBI_FLOATS
 void guMtxF2L(float mf[4][4], Mtx *m) {
     int r, c;

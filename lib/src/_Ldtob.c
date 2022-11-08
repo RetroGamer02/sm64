@@ -4,10 +4,6 @@
 #include <string.h>
 #include "printf.h"
 
-#ifdef TARGET_NDS
-#include "tonccpy.h"
-#endif
-
 #define BUFF_LEN 0x20
 
 static s16 _Ldunscale(s16 *, printf_struct *);

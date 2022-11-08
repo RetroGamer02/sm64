@@ -3,10 +3,6 @@
 #include <string.h>
 #include "printf.h"
 
-#ifdef TARGET_NDS
-#include "tonccpy.h"
-#endif
-
 #define BUFF_LEN 0x18
 
 static u8 D_80334960[] = "0123456789abcdef";

@@ -25,10 +25,6 @@
 #include "surface_collision.h"
 #include "surface_load.h"
 
-#ifdef TARGET_NDS
-#include "tonccpy.h"
-#endif
-
 #define CMD_GET(type, offset) (*(type *) (CMD_PROCESS_OFFSET(offset) + (u8 *) sCurrentCmd))
 
 // These are equal

@@ -7,8 +7,6 @@
 #include <emscripten.h>
 #endif
 
-#include "tonccpy.h"
-
 extern OSMgrArgs piMgrArgs;
 
 u64 osClockRate = 62500000;

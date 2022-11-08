@@ -3,10 +3,6 @@
 #include "printf.h"
 #include <string.h>
 
-#ifdef TARGET_NDS
-#include "tonccpy.h"
-#endif
-
 char *proutSprintf(char *dst, const char *src, size_t count);
 
 int sprintf(char *dst, const char *fmt, ...) {
