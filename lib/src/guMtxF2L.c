@@ -3,6 +3,10 @@
 #include <string.h>
 #endif
 
+#ifdef TARGET_NDS
+#include "tonccpy.h"
+#endif
+
 #ifndef GBI_FLOATS
 void guMtxF2L(float mf[4][4], Mtx *m) {
     int r, c;
@@ -42,7 +46,11 @@ void guMtxL2F(float mf[4][4], Mtx *m) {
 }
 #else
 void guMtxF2L(float mf[4][4], Mtx *m) {
-    memcpy(m, mf, sizeof(Mtx));
+    #ifdef TARGET_NDS
+        tonccpy(m, mf, sizeof(Mtx));
+    #else
+        memcpy(m, mf, sizeof(Mtx));
+    #endif
 }
 #endif
 

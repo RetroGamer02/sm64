@@ -25,6 +25,10 @@
 #include "surface_collision.h"
 #include "surface_load.h"
 
+#ifdef TARGET_NDS
+#include "tonccpy.h"
+#endif
+
 #define CMD_GET(type, offset) (*(type *) (CMD_PROCESS_OFFSET(offset) + (u8 *) sCurrentCmd))
 
 // These are equal
@@ -604,7 +608,11 @@ static void level_cmd_set_terrain_data(void) {
         data = segmented_to_virtual(CMD_GET(void *, 4));
         size = get_area_terrain_size(data) * sizeof(Collision);
         gAreas[sCurrAreaIndex].terrainData = alloc_only_pool_alloc(sLevelPool, size);
-        memcpy(gAreas[sCurrAreaIndex].terrainData, data, size);
+        #ifdef TARGET_NDS
+            tonccpy(gAreas[sCurrAreaIndex].terrainData, data, size);
+        #else
+            memcpy(gAreas[sCurrAreaIndex].terrainData, data, size);
+        #endif
 #endif
     }
     sCurrentCmd = CMD_NEXT;
@@ -630,7 +638,11 @@ static void level_cmd_set_macro_objects(void) {
             len += 4;
         }
         gAreas[sCurrAreaIndex].macroObjects = alloc_only_pool_alloc(sLevelPool, len * sizeof(MacroObject));
-        memcpy(gAreas[sCurrAreaIndex].macroObjects, data, len * sizeof(MacroObject));
+        #ifdef TARGET_NDS
+            tonccpy(gAreas[sCurrAreaIndex].macroObjects, data, len * sizeof(MacroObject));
+        #else
+            memcpy(gAreas[sCurrAreaIndex].macroObjects, data, len * sizeof(MacroObject));
+        #endif
 #endif
     }
     sCurrentCmd = CMD_NEXT;

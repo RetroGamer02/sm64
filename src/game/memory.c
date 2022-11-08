@@ -15,6 +15,10 @@
 #include "segment_symbols.h"
 #include "segments.h"
 
+#ifdef TARGET_NDS
+#include "tonccpy.h"
+#endif
+
 // round up to the next multiple
 #define ALIGN4(val) (((val) + 0x3) & ~0x3)
 #define ALIGN8(val) (((val) + 0x7) & ~0x7)
@@ -263,7 +267,7 @@ static void dma_read(u8 *dest, u8 *srcStart, u8 *srcEnd) {
         size -= copySize;
     }
 #else
-    memcpy(dest, srcStart, srcEnd - srcStart);
+    tonccpy(dest, srcStart, srcEnd - srcStart);
 #endif
 }
 

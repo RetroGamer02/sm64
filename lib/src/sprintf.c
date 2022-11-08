@@ -3,6 +3,10 @@
 #include "printf.h"
 #include <string.h>
 
+#ifdef TARGET_NDS
+#include "tonccpy.h"
+#endif
+
 char *proutSprintf(char *dst, const char *src, size_t count);
 
 int sprintf(char *dst, const char *fmt, ...) {
@@ -17,5 +21,9 @@ int sprintf(char *dst, const char *fmt, ...) {
 }
 
 char *proutSprintf(char *dst, const char *src, size_t count) {
-    return (char *) memcpy((u8 *) dst, (u8 *) src, count) + count;
+    #ifdef TARGET_NDS
+        return (char *) tonccpy((u8 *) dst, (u8 *) src, count) + count;
+    #else
+        return (char *) memcpy((u8 *) dst, (u8 *) src, count) + count;
+    #endif
 }
