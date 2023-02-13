@@ -63,7 +63,7 @@ LightEvent s_event_audio, s_event_main;
 
 static void audio_3ds_loop()
 {
-    s16 audio_buffer[SAMPLES_HIGH * 4];
+    s16 audio_buffer[SAMPLES_HIGH << 2];
     while (running)
     {
         LightEvent_Wait(&s_event_audio);
@@ -72,10 +72,10 @@ static void audio_3ds_loop()
 
         u32 num_audio_samples = audio_3ds_buffered() < 1100 ? SAMPLES_HIGH : SAMPLES_LOW;
 
-        create_next_audio_buffer(audio_buffer + 0 * (num_audio_samples * 2), num_audio_samples);
-        create_next_audio_buffer(audio_buffer + 1 * (num_audio_samples * 2), num_audio_samples);
+        create_next_audio_buffer(audio_buffer + 0 * (num_audio_samples << 1), num_audio_samples);
+        create_next_audio_buffer(audio_buffer + 1 * (num_audio_samples << 1), num_audio_samples);
 
-        audio_3ds_play((u8 *)audio_buffer, 2 * num_audio_samples * 4);
+        audio_3ds_play((u8 *)audio_buffer, 2 * num_audio_samples << 2);
         LightEvent_Signal(&s_event_main);
     }
 }
@@ -102,7 +102,7 @@ static bool audio_3ds_init()
     u8* bufferData = linearAlloc(4096 * 4 * N3DS_DSP_DMA_BUFFER_COUNT);
     for (int i = 0; i < N3DS_DSP_DMA_BUFFER_COUNT; i++)
     {
-        sDspBuffers[i].data_vaddr = &bufferData[i * 4096 * 4];
+        sDspBuffers[i].data_vaddr = &bufferData[i * 4096 << 2];
         sDspBuffers[i].nsamples = 0;
         sDspBuffers[i].status = NDSP_WBUF_FREE;
     }
