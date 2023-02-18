@@ -102,7 +102,7 @@ static bool audio_3ds_init()
     u8* bufferData = linearAlloc(4096 * 4 * N3DS_DSP_DMA_BUFFER_COUNT);
     for (int i = 0; i < N3DS_DSP_DMA_BUFFER_COUNT; i++)
     {
-        sDspBuffers[i].data_vaddr = &bufferData[i * 4096 << 2];
+        sDspBuffers[i].data_vaddr = &bufferData[i << 11 << 2];
         sDspBuffers[i].nsamples = 0;
         sDspBuffers[i].status = NDSP_WBUF_FREE;
     }

@@ -156,7 +156,7 @@ void aSetVolumeImpl(uint8_t flags, int16_t v, int16_t t, int16_t r) {
 }
 
 void aInterleaveImpl(uint16_t left, uint16_t right) {
-    int count = ROUND_UP_16(rspa.nbytes) / sizeof(int16_t) / 8;
+    int count = ROUND_UP_16(rspa.nbytes) / sizeof(int16_t) >> 3;
     int16_t *l = rspa.buf.as_s16 + left / sizeof(int16_t);
     int16_t *r = rspa.buf.as_s16 + right / sizeof(int16_t);
     int16_t *d = rspa.buf.as_s16 + rspa.out / sizeof(int16_t);
@@ -725,8 +725,8 @@ void aEnvMixerImpl(uint8_t flags, ENVMIX_STATE state) {
         rate[1] = rspa.rate[1];
         vol_dry = rspa.vol_dry;
         vol_wet = rspa.vol_wet;
-        step_diff[0] = rspa.vol[0] * (rate[0] - 0x10000) / 8;
-        step_diff[1] = rspa.vol[0] * (rate[1] - 0x10000) / 8;
+        step_diff[0] = rspa.vol[0] * (rate[0] - 0x10000) >> 3;
+        step_diff[1] = rspa.vol[0] * (rate[1] - 0x10000) >> 3;
 
         for (i = 0; i < 8; i++) {
             vols[0][i] = clamp32((int64_t)(rspa.vol[0] << 16) + step_diff[0] * (i + 1));
