@@ -38,28 +38,28 @@ $(eval $(call validate-option,VERSION,jp us eu sh))
 
 ifeq      ($(VERSION),jp)
   DEFINES   += VERSION_JP=1
-  OPT_FLAGS := -g
+  OPT_FLAGS := -Ofast
   GRUCODE   ?= f3d_old
   VERSION_JP_US  ?= true
 else ifeq ($(VERSION),us)
   DEFINES   += VERSION_US=1
-  OPT_FLAGS := -g
+  OPT_FLAGS := -Ofast
   GRUCODE   ?= f3d_old
   VERSION_JP_US  ?= true
 else ifeq ($(VERSION),eu)
   DEFINES   += VERSION_EU=1
-  OPT_FLAGS := -O2
+  OPT_FLAGS := -Ofast
   GRUCODE   ?= f3d_new
   VERSION_JP_US  ?= false
 else ifeq ($(VERSION),sh)
   DEFINES   += VERSION_SH=1
-  OPT_FLAGS := -O2
+  OPT_FLAGS := -Ofast
   GRUCODE   ?= f3d_new
   VERSION_JP_US  ?= false
 endif
 
 ifeq ($(TARGET_NDS),1)
-  OPT_FLAGS := -O2 -flto -ffast-math
+  OPT_FLAGS := -Ofast -flto -ffast-math
   GRUCODE := f3dex2
   COMPILER := gcc
   DEVKITPRO ?= /opt/devkitpro
@@ -112,7 +112,7 @@ else ifeq ($(COMPILER),gcc)
   NON_MATCHING := 1
   MIPSISET     := -mips3
 ifeq ($(TARGET_NDS),0)
-  OPT_FLAGS    := -O2
+  OPT_FLAGS    := -Ofast
 endif
 endif
 
@@ -120,7 +120,7 @@ endif
 # NON_MATCHING - whether to build a matching, identical copy of the ROM
 #   1 - enable some alternate, more portable code that does not produce a matching ROM
 #   0 - build a matching ROM
-NON_MATCHING ?= 0
+NON_MATCHING ?= 1
 $(eval $(call validate-option,NON_MATCHING,0 1))
 
 ifeq ($(TARGET_N64),0)
@@ -774,49 +774,51 @@ endif
 
 # Alternate compiler flags needed for matching
 ifeq ($(COMPILER),ido)
-  $(BUILD_DIR)/levels/%/leveldata.o: OPT_FLAGS := -g
-  $(BUILD_DIR)/actors/%.o:           OPT_FLAGS := -g
-  $(BUILD_DIR)/bin/%.o:              OPT_FLAGS := -g
-  $(BUILD_DIR)/src/goddard/%.o:      OPT_FLAGS := -g
+  $(BUILD_DIR)/levels/%/leveldata.o: OPT_FLAGS := -Ofast
+  $(BUILD_DIR)/actors/%.o:           OPT_FLAGS := -Ofast
+  $(BUILD_DIR)/bin/%.o:              OPT_FLAGS := -Ofast
+  $(BUILD_DIR)/src/goddard/%.o:      OPT_FLAGS := -Ofast
+  $(BUILD_DIR)/src/nds/%.o:			 OPT_FLAGS := -Ofast
+  $(BUILD_DIR)/src/nds/nds_r%.o:	 OPT_FLAGS := -Ofast
   $(BUILD_DIR)/src/goddard/%.o:      MIPSISET := -mips1
-  $(BUILD_DIR)/lib/src/%.o:          OPT_FLAGS :=
-  $(BUILD_DIR)/lib/src/math/%.o:     OPT_FLAGS := -O2
-  $(BUILD_DIR)/lib/src/math/ll%.o:   OPT_FLAGS :=
+  $(BUILD_DIR)/lib/src/%.o:          OPT_FLAGS := -Ofast
+  $(BUILD_DIR)/lib/src/math/%.o:     OPT_FLAGS := -Ofast
+  $(BUILD_DIR)/lib/src/math/ll%.o:   OPT_FLAGS := -Ofast
   $(BUILD_DIR)/lib/src/math/ll%.o:   MIPSISET := -mips3 -32
-  $(BUILD_DIR)/lib/src/ldiv.o:       OPT_FLAGS := -O2
-  $(BUILD_DIR)/lib/src/string.o:     OPT_FLAGS := -O2
-  $(BUILD_DIR)/lib/src/gu%.o:        OPT_FLAGS := -O3
-  $(BUILD_DIR)/lib/src/al%.o:        OPT_FLAGS := -O3
+  $(BUILD_DIR)/lib/src/ldiv.o:       OPT_FLAGS := -Ofast
+  $(BUILD_DIR)/lib/src/string.o:     OPT_FLAGS := -Ofast
+  $(BUILD_DIR)/lib/src/gu%.o:        OPT_FLAGS := -Ofast
+  $(BUILD_DIR)/lib/src/al%.o:        OPT_FLAGS := -Ofast
 
   ifeq ($(VERSION),sh)
-    $(BUILD_DIR)/lib/src/_Ldtob.o:   OPT_FLAGS := -O3
-    $(BUILD_DIR)/lib/src/_Litob.o:   OPT_FLAGS := -O3
-    $(BUILD_DIR)/lib/src/_Printf.o:  OPT_FLAGS := -O3
-    $(BUILD_DIR)/lib/src/sprintf.o:  OPT_FLAGS := -O3
-    $(BUILD_DIR)/lib/src/osDriveRomInit.o: OPT_FLAGS := -g
+    $(BUILD_DIR)/lib/src/_Ldtob.o:   OPT_FLAGS := -Ofast
+    $(BUILD_DIR)/lib/src/_Litob.o:   OPT_FLAGS := -Ofast
+    $(BUILD_DIR)/lib/src/_Printf.o:  OPT_FLAGS := -Ofast
+    $(BUILD_DIR)/lib/src/sprintf.o:  OPT_FLAGS := -Ofast
+    $(BUILD_DIR)/lib/src/osDriveRomInit.o: OPT_FLAGS := -Ofast
   endif
   ifeq ($(VERSION),eu)
-    $(BUILD_DIR)/lib/src/_Ldtob.o:   OPT_FLAGS := -O3
-    $(BUILD_DIR)/lib/src/_Litob.o:   OPT_FLAGS := -O3
-    $(BUILD_DIR)/lib/src/_Printf.o:  OPT_FLAGS := -O3
-    $(BUILD_DIR)/lib/src/sprintf.o:  OPT_FLAGS := -O3
+    $(BUILD_DIR)/lib/src/_Ldtob.o:   OPT_FLAGS := -Ofast
+    $(BUILD_DIR)/lib/src/_Litob.o:   OPT_FLAGS := -Ofast
+    $(BUILD_DIR)/lib/src/_Printf.o:  OPT_FLAGS := -Ofast
+    $(BUILD_DIR)/lib/src/sprintf.o:  OPT_FLAGS := -Ofast
 
     # For all audio files other than external.c and port_eu.c, put string literals
     # in .data. (In Shindou, the port_eu.c string literals also moved to .data.)
-    $(BUILD_DIR)/src/audio/%.o:        OPT_FLAGS := -O2 -use_readwrite_const
-    $(BUILD_DIR)/src/audio/port_eu.o:  OPT_FLAGS := -O2
+    $(BUILD_DIR)/src/audio/%.o:        OPT_FLAGS := -Ofast -use_readwrite_const
+    $(BUILD_DIR)/src/audio/port_eu.o:  OPT_FLAGS := -Ofast
   endif
   ifeq ($(VERSION_JP_US),true)
-    $(BUILD_DIR)/src/audio/%.o:        OPT_FLAGS := -O2 -Wo,-loopunroll,0
-    $(BUILD_DIR)/src/audio/load.o:     OPT_FLAGS := -O2 -Wo,-loopunroll,0 -framepointer
+    $(BUILD_DIR)/src/audio/%.o:        OPT_FLAGS := -Ofast -Wo,-loopunroll,0
+    $(BUILD_DIR)/src/audio/load.o:     OPT_FLAGS := -Ofast -Wo,-loopunroll,0 -framepointer
     # The source-to-source optimizer copt is enabled for audio. This makes it use
     # acpp, which needs -Wp,-+ to handle C++-style comments.
     # All other files than external.c should really use copt, but only a few have
     # been matched so far.
-    $(BUILD_DIR)/src/audio/effects.o:   OPT_FLAGS := -O2 -Wo,-loopunroll,0 -sopt,-inline=sequence_channel_process_sound,-scalaroptimize=1 -Wp,-+
-    $(BUILD_DIR)/src/audio/synthesis.o: OPT_FLAGS := -O2 -Wo,-loopunroll,0 -sopt,-scalaroptimize=1 -Wp,-+
+    $(BUILD_DIR)/src/audio/effects.o:   OPT_FLAGS := -Ofast -Wo,-loopunroll,0 -sopt,-inline=sequence_channel_process_sound,-scalaroptimize=1 -Wp,-+
+    $(BUILD_DIR)/src/audio/synthesis.o: OPT_FLAGS := -Ofast -Wo,-loopunroll,0 -sopt,-scalaroptimize=1 -Wp,-+
   endif
-  $(BUILD_DIR)/src/audio/external.o: OPT_FLAGS := -O2 -Wo,-loopunroll,0
+  $(BUILD_DIR)/src/audio/external.o: OPT_FLAGS := -Ofast -Wo,-loopunroll,0
 
 # Add a target for build/eu/src/audio/*.copt to make it easier to see debug
 $(BUILD_DIR)/src/audio/%.acpp: src/audio/%.c
