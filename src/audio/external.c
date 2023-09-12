@@ -2438,12 +2438,14 @@ void play_toads_jingle(void) {
     func_803200E4(50);
 }
 
+#ifdef __3DS__
 static uint8_t is_new_n3ds()
 {
     uint8_t is_new_n3ds = 0;
     APT_CheckNew3DS(&is_new_n3ds);
     return is_new_n3ds;
 }
+#endif
 
 void sound_reset(u8 presetId) {
 #ifndef VERSION_JP
