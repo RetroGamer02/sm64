@@ -40,14 +40,19 @@ static int audio_3ds_buffered(void)
     return total;
 }
 
+static int audio_3ds_get_desired_buffered(void)
+{
+    return 1100;
+}
+
 static void audio_3ds_play(const uint8_t *buf, size_t len)
 {
-    if (len > 16384)
+    if (len > 4096 * 4)
         return;
     if (sDspBuffers[sNextBuffer].status != NDSP_WBUF_FREE &&
         sDspBuffers[sNextBuffer].status != NDSP_WBUF_DONE)
         return;
-    sDspBuffers[sNextBuffer].nsamples = len >> 2;
+    sDspBuffers[sNextBuffer].nsamples = len / 4;
     sDspBuffers[sNextBuffer].status = NDSP_WBUF_FREE;
     ndspChnWaveBufAdd(0, &sDspBuffers[sNextBuffer]);
 
@@ -63,19 +68,17 @@ LightEvent s_event_audio, s_event_main;
 
 static void audio_3ds_loop()
 {
-    s16 audio_buffer[SAMPLES_HIGH << 2];
     while (running)
     {
         LightEvent_Wait(&s_event_audio);
         if (!running)
             break;
-
-        u32 num_audio_samples = audio_3ds_buffered() < 1100 ? SAMPLES_HIGH : SAMPLES_LOW;
-
-        create_next_audio_buffer(audio_buffer + 0 * (num_audio_samples << 1), num_audio_samples);
-        create_next_audio_buffer(audio_buffer + 1 * (num_audio_samples << 1), num_audio_samples);
-
-        audio_3ds_play((u8 *)audio_buffer, 2 * num_audio_samples << 2);
+        u32 num_audio_samples = audio_3ds_buffered() < audio_3ds_get_desired_buffered() ? SAMPLES_HIGH : SAMPLES_LOW;
+        s16 audio_buffer[SAMPLES_HIGH * 2 * 2];
+        for (int i = 0; i < 2; i++) {
+            create_next_audio_buffer(audio_buffer + i * (num_audio_samples * 2), num_audio_samples);
+        }
+        audio_3ds_play((u8 *)audio_buffer, 2 * num_audio_samples * 4);
         LightEvent_Signal(&s_event_main);
     }
 }
@@ -102,7 +105,7 @@ static bool audio_3ds_init()
     u8* bufferData = linearAlloc(4096 * 4 * N3DS_DSP_DMA_BUFFER_COUNT);
     for (int i = 0; i < N3DS_DSP_DMA_BUFFER_COUNT; i++)
     {
-        sDspBuffers[i].data_vaddr = &bufferData[i << 11 << 2];
+        sDspBuffers[i].data_vaddr = &bufferData[i * 4096 * 4];
         sDspBuffers[i].nsamples = 0;
         sDspBuffers[i].status = NDSP_WBUF_FREE;
     }
@@ -155,6 +158,7 @@ struct AudioAPI audio_3ds =
 {
     audio_3ds_init,
     audio_3ds_buffered,
+    audio_3ds_get_desired_buffered,
     audio_3ds_play,
     audio_3ds_stop
 };

@@ -426,7 +426,7 @@ static void gfx_citro3d_upload_texture(const uint8_t *rgba32_buf, int width, int
     {
         u32 newWidth = width < 8 ? 8 : (1 << (32 - __builtin_clz(width - 1)));
         u32 newHeight = height < 8 ? 8 : (1 << (32 - __builtin_clz(height - 1)));
-        if (newWidth * newHeight << 2 > sizeof(sTexBuf))
+        if (newWidth * newHeight * 4 > sizeof(sTexBuf))
         {
             printf("Tex buffer overflow!\n");
             return;
@@ -449,7 +449,7 @@ static void gfx_citro3d_upload_texture(const uint8_t *rgba32_buf, int width, int
                     if (realY >= height)
                         realY -= height;
 
-                    int pos = sTileOrder[x2 % 4 + y2 % 4 * 4] + 16 * (x2 >> 2) + 32 * (y2 >> 2);
+                    int pos = sTileOrder[x2 % 4 + y2 % 4 * 4] + 16 * (x2 / 4) + 32 * (y2 / 4);
                     u32 c = ((u32*)rgba32_buf)[realY * width + realX];
                     ((u32*)sTexBuf)[offs + pos] = ((c & 0xFF) << 24) | (((c >> 8) & 0xFF) << 16) | (((c >> 16) & 0xFF) << 8) | (c >> 24);
                 }
@@ -513,16 +513,16 @@ static void gfx_citro3d_set_viewport(int x, int y, int width, int height)
 {
     if (gGfx3DSMode == GFX_3DS_MODE_AA_22 || gGfx3DSMode == GFX_3DS_MODE_WIDE_AA_12)
     {
-        viewport_x = x << 1;
-        viewport_y = y << 1;
-        viewport_width = width << 1;
-        viewport_height = height << 1;
+        viewport_x = x * 2;
+        viewport_y = y * 2;
+        viewport_width = width * 2;
+        viewport_height = height * 2;
     }
     else if (gGfx3DSMode == GFX_3DS_MODE_WIDE)
     {
-        viewport_x = x << 1;
+        viewport_x = x * 2;
         viewport_y = y;
-        viewport_width = width << 1;
+        viewport_width = width * 2;
         viewport_height = height;
     }
     else // gGfx3DSMode == GFX_3DS_MODE_NORMAL
@@ -539,16 +539,16 @@ static void gfx_citro3d_set_scissor(int x, int y, int width, int height)
     scissor = true;
     if (gGfx3DSMode == GFX_3DS_MODE_AA_22 || gGfx3DSMode == GFX_3DS_MODE_WIDE_AA_12)
     {
-        scissor_x = x << 1;
-        scissor_y = y << 1;
-        scissor_width = (x + width) << 1;
-        scissor_height = (y + height) << 1;
+        scissor_x = x * 2;
+        scissor_y = y * 2;
+        scissor_width = (x + width) * 2;
+        scissor_height = (y + height) * 2;
     }
     else if (gGfx3DSMode == GFX_3DS_MODE_WIDE)
     {
-        scissor_x = x << 1;
+        scissor_x = x * 2;
         scissor_y = y;
-        scissor_width = (x + width) << 1;
+        scissor_width = (x + width) * 2;
         scissor_height = y + height;
     }
     else // gGfx3DSMode == GFX_3DS_MODE_NORMAL
@@ -690,7 +690,7 @@ static void renderTwoColorTris(float buf_vbo[], size_t buf_vbo_len, size_t buf_v
 
 static void gfx_citro3d_draw_triangles(float buf_vbo[], size_t buf_vbo_len, size_t buf_vbo_num_tris)
 {
-    if (sBufIdx * VERTEX_SHADER_SIZE > 1 << 11 << 11 >> 2)
+    if (sBufIdx * VERTEX_SHADER_SIZE > 1 * 1024 * 1024 / 4)
     {
         printf("Vertex buffer full!\n");
         return;
